@@ -1,0 +1,102 @@
+[
+  {
+    "seed": 1,
+    "character": "tung",
+    "time": 731,
+    "wave": 15,
+    "level": 49,
+    "kills": 1168,
+    "hp": 175,
+    "bosses": 4,
+    "victory": true,
+    "weapons": [
+      "basic:2",
+      "nuclear:3",
+      "toxic:5",
+      "rainbow:2",
+      "orbit:4",
+      "sigma:1"
+    ],
+    "entities": 0
+  },
+  {
+    "seed": 2,
+    "character": "shark",
+    "time": 863,
+    "wave": 15,
+    "level": 55,
+    "kills": 1418,
+    "hp": 160,
+    "bosses": 4,
+    "victory": true,
+    "weapons": [
+      "basic:2",
+      "orbit:7",
+      "burp:2",
+      "toxic:6",
+      "nuclear:2",
+      "rainbow:1"
+    ],
+    "entities": 0
+  },
+  {
+    "seed": 3,
+    "character": "croc",
+    "time": 723,
+    "wave": 15,
+    "level": 47,
+    "kills": 1170,
+    "hp": 155,
+    "bosses": 4,
+    "victory": true,
+    "weapons": [
+      "basic:3",
+      "sigma:7",
+      "toxic:5",
+      "burp:1",
+      "nuclear:2",
+      "rainbow:3"
+    ],
+    "entities": 0
+  },
+  {
+    "seed": 4,
+    "character": "cup",
+    "time": 798,
+    "wave": 15,
+    "level": 52,
+    "kills": 1285,
+    "hp": 165,
+    "bosses": 4,
+    "victory": true,
+    "weapons": [
+      "basic:3",
+      "rainbow:5",
+      "orbit:5",
+      "sigma:4",
+      "nuclear:5",
+      "toxic:1"
+    ],
+    "entities": 0
+  },
+  {
+    "seed": 5,
+    "character": "tung",
+    "time": 739,
+    "wave": 15,
+    "level": 50,
+    "kills": 1197,
+    "hp": 160,
+    "bosses": 4,
+    "victory": true,
+    "weapons": [
+      "basic:1",
+      "toxic:7",
+      "sigma:4",
+      "nuclear:5",
+      "orbit:3",
+      "burp:2"
+    ],
+    "entities": 0
+  }
+]

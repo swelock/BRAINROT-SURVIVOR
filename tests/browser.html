@@ -1,7 +1,9 @@
-<!doctype html><meta charset="utf-8"><title>BRAINROT v2 verification</title>
-<style>body{margin:0;background:#10231b;color:#dff6c9;font:12px system-ui}nav{display:flex;gap:5px;padding:5px;flex-wrap:wrap}button{padding:5px;background:#31472f;color:#e6ffd9;border:1px solid #799461;cursor:pointer}iframe{width:100%;height:calc(100vh - 95px);border:0}output{display:block;white-space:pre-wrap;max-height:55px;overflow:auto}</style>
-<nav><button data-case="victory">Wave 15 victory</button><button data-case="67">SIX SEVEN shot</button><button data-case="super">Boss rush unlocked</button><button data-case="kill">Defeat current bosses</button><button data-case="endless">Endless 10 minutes</button><button data-case="death">Endless death</button><button data-case="stress">Stress 600 frames</button><button data-case="fallback">Missing sprites</button><button data-case="directions">Direction cycle</button><button data-case="restore">Restore sprites</button></nav><output id="report">Loading isolated test game…</output><iframe src="../index.html?test"></iframe>
+<!doctype html><meta charset="utf-8"><title>BRAINROT v1.0.2 verification</title>
+<style>body{height:100vh;display:flex;flex-direction:column;margin:0;background:#10231b;color:#dff6c9;font:12px system-ui}nav{display:flex;gap:5px;padding:5px;flex-wrap:wrap}button{padding:5px;background:#31472f;color:#e6ffd9;border:1px solid #799461;cursor:pointer}iframe{width:100%;flex:1;min-height:0;border:0}output{display:block;white-space:pre-wrap;max-height:55px;overflow:auto}</style>
+<nav><button data-case="reroll">Reroll screen</button><button data-case="touch">Touch dash gesture</button><button data-case="casino">Normal casino</button><button data-case="bonuses">All start bonuses</button><button data-case="liquid">Liquid gallery</button><button data-case="reloadSave">Reload saved ledger</button><button data-case="victory">Wave 15 victory</button><button data-case="67">SIX SEVEN shot</button><button data-case="super">Boss rush unlocked</button><button data-case="kill">Defeat current bosses</button><button data-case="endless">Endless 10 minutes</button><button data-case="death">Endless death</button><button data-case="stress">Stress 600 frames</button><button data-case="fallback">Missing sprites</button><button data-case="directions">Direction cycle</button><button data-case="restore">Restore sprites</button></nav><output id="report">Loading isolated test game…</output><iframe src="../index.html?test"></iframe>
 <script type="module">
+import {SaveSystem} from '../js/systems/SaveSystem.js';
+import {addBonus} from '../js/systems/NextRunBonusSystem.js';
 import {spawnEnemy} from '../js/systems/EnemySystem.js';
 import {primaryVolley} from '../js/systems/SixSeven.js';
 import {fire} from '../js/systems/WeaponSystem.js';
@@ -11,6 +13,12 @@ function reportState(){const {game:g}=context();report.textContent=JSON.stringif
 frame.onload=()=>{report.textContent='Ready: isolated in-memory save. Production LocalStorage is never modified.';};
 document.querySelector('nav').onclick=async e=>{const id=e.target.dataset.case;if(!id)return;try{
  clearInterval(cycle);const {game:g,ui,renderer}=context();
+ if(id==='reroll'){g.start('tung');g.player.rerolls=1;g.pendingLevels=1;g.openLevel();}
+ if(id==='touch'){g.start('shark');g.state='PLAYING';const stick=frame.contentDocument.querySelector('#stick');const r=stick.getBoundingClientRect();const Pointer=frame.contentWindow.PointerEvent;for(const type of ['pointerdown','pointerup','pointerdown','pointerup'])stick.dispatchEvent(new Pointer(type,{pointerId:1,clientX:r.x+r.width/2,clientY:r.y+r.height/2,bubbles:true}));}
+ if(id==='casino'){g.start('tung');g.state='PLAYING';g.finish(false);ui.show('CASINO');}
+ if(id==='reloadSave'){const d=new SaveSystem(context().store.storage).data;context().store.data=d;g.save=d;ui.show('MENU');}
+ if(id==='bonuses'){for(const key of ['startingChest','luckyStart','extraRerolls','bossLoot','early67'])addBonus(g.save,key);g.start('shark');}
+ if(id==='liquid'){g.start('tung');g.player.weapons=[];g.state='PLAYING';for(let i=0;i<5;i++){fire(g,-180+i*90,80,0,{weapon:['basic','basic','toxic','nuclear','rainbow'][i],r:i===3?12:8,explosion:i===1?45:0});}g.pause();ui.root.innerHTML='';ui.root.className='playing';}
  if(id==='victory'){g.start('tung');g.state='PLAYING';g.wave=15;g.player.level=32;g.player.weapons[0].level=8;g.player.upgrades.sixSeven=5;const b=spawnEnemy(g,'absolute',true);g.damageEnemy(b,1e9);}
  if(id==='67'){g.start('shark');g.state='PLAYING';g.wave=12;g.player.weapons=[];g.player.upgrades.sixSeven=5;g.player.sixSevenCounter=66;g.rng=()=>.01;primaryVolley(g,15,0);g.projectiles[0].x=100;g.state='PAUSED';ui.root.innerHTML='';ui.root.className='playing';ui.buildHUD();}
  if(id==='super'){g.save.modes.superVomitUnlocked=true;ui.show('MENU');}
@@ -29,8 +37,8 @@ document.querySelector('nav').onclick=async e=>{const id=e.target.dataset.case;i
   for(let i=0;i<240;i++){const e=spawnEnemy(g,i<2?['clubber','breaker'][i]:['clubber','shooter','tank','runner'][i%4],i<2);e.x=Math.cos(i*2.4)*(90+i*2);e.y=Math.sin(i*2.4)*(90+i*2);e.hp=e.maxHp=1e9;}
   for(let i=0;i<650;i++)fire(g,0,0,i*.1,{pierce:20});const times=[];let maxProjectiles=0,maxParticles=0;
   for(let i=0;i<600;i++){const t=performance.now();g.update(1/60);renderer.draw(i/60);times.push(performance.now()-t);maxProjectiles=Math.max(maxProjectiles,g.projectiles.length);maxParticles=Math.max(maxParticles,g.particles.length);}
-  times.sort((a,b)=>a-b);g.pause();ui.root.innerHTML='';ui.root.className='playing';report.textContent=JSON.stringify({viewport:[renderer.w,renderer.h],frames:600,mean:times.reduce((a,b)=>a+b)/600,p95:times[569],maxProjectiles,maxParticles,enemies:g.enemies.length});return;
+  times.sort((a,b)=>a-b);g.pause();ui.root.innerHTML='';ui.root.className='playing';report.textContent=JSON.stringify({viewport:[renderer.w,renderer.h],frames:600,mean:times.reduce((a,b)=>a+b)/600,p95:times[569],maxProjectiles,maxParticles,enemies:g.enemies.length,visuals:Object.fromEntries(['drops','splats','impacts','lights','ghosts'].map(k=>[k,g.visuals[k].length]))});return;
  }
- if(!['67','directions'].includes(id))ui.render();reportState();
+ if(!['67','directions','liquid'].includes(id))ui.render();reportState();
  }catch(error){report.textContent='FAIL: '+error.stack;}};
 </script>

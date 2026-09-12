@@ -5,7 +5,12 @@ from pathlib import Path
 import webbrowser
 
 root = Path(__file__).resolve().parent
-handler = partial(SimpleHTTPRequestHandler, directory=str(root))
+class PreviewHandler(SimpleHTTPRequestHandler):
+    def end_headers(self):
+        self.send_header('Cache-Control', 'no-store, max-age=0')
+        super().end_headers()
+
+handler = partial(PreviewHandler, directory=str(root))
 try:
     server = ThreadingHTTPServer(('127.0.0.1', 8000), handler)
 except OSError:

@@ -4,7 +4,7 @@ import {angle,dist,pick} from '../game/math.js';
 export function elemental(g){const n=g.rng();return n<.25?'poison':n<.5?'freeze':n<.7?'critical':n<.85?'knockback':'chain';}
 export function fire(g,x,y,a,options={}){if(g.projectiles.length>=650)return;const p=g.player,b=p.b,speed=(options.speed||500)*(1+(b.projectileSpeed||0));const effects=[...(options.effects||[])];if(g.hasBuff('rainbow'))effects.push(elemental(g));
  g.projectiles.push({id:++g.nextId,x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:(options.r||6)*(1+(b.size||0)+(g.hasBuff('boost')?.25:0)+(g.chaosEffect==='size'?.5:0)),damage:options.damage||10,color:options.color||'#caf66c',life:3,pierce:(b.pierce||0)+(options.pierce||0),hits:new Set(),...options,effects,pierce:(b.pierce||0)+(options.pierce||0),r:(options.r||6)*(1+(b.size||0)+(g.hasBuff('boost')?.25:0)+(g.chaosEffect==='size'?.5:0))});
- p.projectileCount++;if(b.nuclearStomach&&p.projectileCount%100===0)g.explode(p.x,p.y,230,120,'#edcf7b');}
+ g.visuals?.shot(g,g.projectiles[g.projectiles.length-1],x===p.x&&y===p.y);p.projectileCount++;if(b.nuclearStomach&&p.projectileCount%100===0)g.explode(p.x,p.y,230,120,'#edcf7b');}
 export function updateWeapons(g,dt){const p=g.player,b=p.b;const nearby=g.enemies.filter(e=>!e.dead&&dist(e,p)<1100);let target=null,best=Infinity;for(const e of nearby){const d=dist(e,p);if(d<best){best=d;target=e;}}
  for(const w of p.weapons){const d=weapons.find(d=>d.id===w.id),l=w.level;w.timer-=dt;
  if(w.id==='orbit'){const count=2+Math.floor(l/2)+(w.evolved?2:0),radius=75+l*4;w.orbs=[];for(let i=0;i<count;i++){const a=g.time*(1.7+l*.11+(w.evolved?.8:0))+i*Math.PI*2/count;const orb={x:p.x+Math.cos(a)*radius,y:p.y+Math.sin(a)*radius,r:w.evolved?16:11};w.orbs.push(orb);for(const e of g.grid.query(orb.x,orb.y,80))if(!e.dead&&e.orbitHit<=0&&dist(orb,e)<orb.r+e.r){g.damageEnemy(e,d.damage*(1+(l-1)*.22)*(1+(b.area||0)));e.orbitHit=.3;}}
@@ -14,8 +14,8 @@ export function updateWeapons(g,dt){const p=g.player,b=p.b;const nearby=g.enemie
  w.timer=d.cooldown*Math.pow(.9,b.cooldown?Math.round(b.cooldown*10):0)/rate*(w.id==='basic'?(l>=3?.85:1):Math.max(.5,1-(l-1)*.055));
  p.attacks++;let count=1+(b.count||0)+(g.hasBuff('boost')?1:0)+(g.rng()<(b.double||0)?1:0)+(b.fifth&&p.attacks%5===0?1:0);
  let damage=d.damage*(w.id==='basic'?(l>=2?1.2:1)*(l>=7?1.25:1):1+(l-1)*.2);
- if(w.id==='burp'){const seed=pick(nearby,g.rng);let cluster=seed,most=0;for(const e of nearby.slice(0,30)){const n=g.grid.query(e.x,e.y,90).length;if(n>most){cluster=e;most=n;}}g.explode(cluster.x,cluster.y,95+l*7,damage,d.color);}
- else if(w.id==='sigma')g.explode(p.x,p.y,140+l*13,damage,d.color,100);
+ if(w.id==='burp'){const seed=pick(nearby,g.rng);let cluster=seed,most=0;for(const e of nearby.slice(0,30)){const n=g.grid.query(e.x,e.y,90).length;if(n>most){cluster=e;most=n;}}g.explode(cluster.x,cluster.y,95+l*7,damage,d.color);g.effects[g.effects.length-1].kind='burp';}
+ else if(w.id==='sigma'){g.explode(p.x,p.y,140+l*13,damage,d.color,100);g.effects[g.effects.length-1].kind='sigma';}
  else{
  if(w.id==='basic'&&l>=4)count++;
  if(w.id==='toxic')count+=2+Math.floor(l/2);
@@ -35,8 +35,8 @@ export function updateWeapons(g,dt){const p=g.player,b=p.b;const nearby=g.enemie
  if(id==='cup'){p.specialTime=.65;g.explode(p.x,p.y,115,28,'#f4bad2',40);p.invulnerable=Math.max(p.invulnerable,.65);p.passive=6;}
  if(id==='chaos'){g.chaosEffect=pick(['haste','speed','size','chain','explosions'],g.rng);g.chaosTime=5;g.announce('chaos',g.chaosEffect);p.passive=12;}}
  g.rainTimer-=dt;if(g.rainTimer<=0){g.rainTimer=.35;if(g.hasBuff('rain')&&target)fire(g,target.x+(g.rng()-.5)*120,target.y-250,Math.PI/2,{damage:25,color:'#c4ef7a'});if(g.chaosEffect==='explosions'&&target)g.explode(target.x,target.y,75,25);if(g.chaosEffect==='chain'&&target)g.chain(target,25);}
- for(const q of g.projectiles){if(!g.active())return;q.splitLife=Math.max(0,(q.splitLife||0)-dt);const ox=q.x,oy=q.y;q.x+=q.vx*dt;q.y+=q.vy*dt;q.life-=dt;if(dist(q,p)>1500){q.life=0;continue;}
- for(const e of g.grid.query((ox+q.x)/2,(oy+q.y)/2,q.r+65+Math.hypot(q.x-ox,q.y-oy)/2)){if(e.dead||q.hits.has(e.id)||segmentDistance(e,ox,oy,q.x,q.y)>q.r+e.r)continue;q.hits.add(e.id);if(!q.explosion)g.damageEnemy(e,q.damage,q.effects.includes('critical'));g.sound('hit');if(!g.active())return;if(q.sixSeven)impact67(g,q,e);
+ for(const q of g.projectiles){if(!g.active())return;q.splitLife=Math.max(0,(q.splitLife||0)-dt);const ox=q.x,oy=q.y;q.x+=q.vx*dt;q.y+=q.vy*dt;q.life-=dt;g.visuals?.trail(q,dt);if(dist(q,p)>1500){q.life=0;continue;}
+ for(const e of g.grid.query((ox+q.x)/2,(oy+q.y)/2,q.r+65+Math.hypot(q.x-ox,q.y-oy)/2)){if(e.dead||q.hits.has(e.id)||segmentDistance(e,ox,oy,q.x,q.y)>q.r+e.r)continue;q.hits.add(e.id);g.visuals?.impact(g,q,e);if(!q.explosion)g.damageEnemy(e,q.damage,q.effects.includes('critical'));g.sound('hit');if(!g.active())return;if(q.sixSeven)impact67(g,q,e);
  for(const effect of q.effects){if(effect==='poison'){e.poison=q.poisonDuration||3;e.poisonDps=(q.poisonDps||3)*(1+(b.poison||0));}if(effect==='freeze')e.freeze=2;if(effect==='knockback'){e.x+=q.vx*.13;e.y+=q.vy*.13;}if(effect==='chain')g.chain(e,q.damage*.65);}
  if(q.explosion)g.explode(q.x,q.y,q.explosion,q.damage,q.color);
  else if(g.rng()<(b.unstable||0)+(g.hasBuff('fever')?.2:0))g.explode(q.x,q.y,55,q.damage*.6,q.color);
