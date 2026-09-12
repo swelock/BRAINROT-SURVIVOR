@@ -1,0 +1,22 @@
+{
+  "character": "tung",
+  "frameSize": 128,
+  "pixelsPerUnit": 57,
+  "anchorX": 64,
+  "anchorY": 109,
+  "drawSize": 106,
+  "frames": 6,
+  "directions": [
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE"
+  ],
+  "width": 768,
+  "height": 1024,
+  "source": "tung-walk.webp"
+}

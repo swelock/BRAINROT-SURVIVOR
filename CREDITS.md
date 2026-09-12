@@ -11,3 +11,7 @@ There are **no third-party CC BY assets shipped**, so no external asset attribut
 ## Development tools
 
 Python, NumPy and Pillow render and pack the atlases offline. They are not bundled into the browser game. Blender is optional for editing exported OBJ geometry and was not used to render these atlases. The project includes no new runtime dependency, CDN, account service or API key.
+
+## v1.0.3 locomotion
+
+Пять атласов движения и статический атлас существующего Абсолютного Брейнрота созданы локально из процедурных моделей проекта. Источник: `tools/asset-pipeline/models.py`; сборка: `render_walkcycles.py`. Внешние модели, платные сервисы и сторонние изображения для патча не использовались.

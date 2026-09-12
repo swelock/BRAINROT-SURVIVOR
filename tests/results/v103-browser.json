@@ -1,0 +1,47 @@
+{
+  "date": "2026-09-12",
+  "stress": [
+    {
+      "mode": "ENDLESS",
+      "viewport": [
+        1366,
+        768
+      ],
+      "frames": 600,
+      "meanMs": 3.478333,
+      "p95Ms": 5.7
+    },
+    {
+      "mode": "ENDLESS",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "frames": 600,
+      "meanMs": 3.891167,
+      "p95Ms": 6.4
+    },
+    {
+      "mode": "SUPER_VOMIT",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "frames": 600,
+      "meanMs": 3.967333,
+      "p95Ms": 6.4
+    }
+  ],
+  "enemies": 240,
+  "maxProjectiles": 650,
+  "movingPlayer": true,
+  "consoleErrors": 0,
+  "physicalMobileTested": false,
+  "nonDnaRiskWinUI": [
+    "2 starting chests",
+    "2 rerolls",
+    "25% luck for 6 min",
+    "first 2 bosses extra loot",
+    "67 on attack 7"
+  ]
+}

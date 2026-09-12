@@ -2,7 +2,7 @@ import {fire} from './WeaponSystem.js';
 export const sixSevenDamage=level=>[0,6.7,8.7,10.7,12.7,16.7][Math.min(5,level)];
 // Called only once per BASIC attack, outside its multishot loop. Evolutions retain the basic id.
 export function primaryVolley(g,damage,angle){
- const p=g.player;p.primaryAttacks++;const early=!!p.early67&&p.primaryAttacks>=17;const level=p.upgrades.sixSeven||(early?1:0);if(!level)return;
+ const p=g.player;p.primaryAttacks++;const early=!!p.early67&&p.primaryAttacks>=(p.early67At||17);const level=p.upgrades.sixSeven||(early?1:0);if(!level)return;
  p.sixSevenCounter++;if(!early&&p.sixSevenCounter<67)return;p.sixSevenCounter=0;if(early)p.early67=0;
  const absolute=level===5&&g.rng()<.067;
  // Reserve space even under the projectile cap: the earned shot must always spawn.

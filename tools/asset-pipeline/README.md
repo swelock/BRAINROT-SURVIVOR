@@ -31,3 +31,7 @@ Import the resulting OBJ with its adjacent MTL. This exporter was tested; no Ble
 ## Runtime
 
 `AssetManager` preloads each atlas once, validates dimensions and waits at most five seconds. A failed image falls back to the original Canvas character renderer. The start button explains the brief loading state; it enables even if an atlas fails. Runtime uses Canvas `drawImage`, cached contact/projected shadows and procedural bob, bank, dash stretch, slam anticipation, hit response and cup spin. No Blender, NumPy, Pillow, OBJ or 3D engine is loaded by the game.
+
+## v1.0.3: procedural locomotion
+
+`python3 render_walkcycles.py` builds five 768×1024 lossless WebP atlases. Columns are six locomotion phases; rows follow E, SE, S, SW, W, NW, N, NE. All frames use the existing 128 px camera and fixed character anchor. The generator also builds the existing Chaos character's idle atlas from its new procedural mesh. `python3 validate_walkcycles.py` verifies six distinct frames per row, bounds and matching static metadata. Run `tests/locomotion.html` through the local server to inspect every direction with speed, dash, attack, special-pose and fallback controls.

@@ -1,0 +1,22 @@
+{
+  "character": "shark",
+  "frameSize": 128,
+  "pixelsPerUnit": 43,
+  "anchorX": 64,
+  "anchorY": 87,
+  "drawSize": 106,
+  "frames": 6,
+  "directions": [
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE"
+  ],
+  "width": 768,
+  "height": 1024,
+  "source": "shark-walk.webp"
+}

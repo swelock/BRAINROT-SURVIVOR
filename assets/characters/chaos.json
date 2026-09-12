@@ -1,0 +1,19 @@
+{
+  "character": "chaos",
+  "frameSize": 128,
+  "pixelsPerUnit": 61,
+  "anchorX": 64,
+  "anchorY": 107,
+  "drawSize": 106,
+  "directions": [
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE"
+  ],
+  "source": "chaos.webp"
+}

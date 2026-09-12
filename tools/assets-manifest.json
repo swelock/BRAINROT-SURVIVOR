@@ -133,5 +133,24 @@
       "shipped": false,
       "reason": "Source retrieval failed; actual creator/license/download could not be verified."
     }
-  ]
+  ],
+  "locomotion": {
+    "version": "1.0.3",
+    "framesPerDirection": 6,
+    "directions": 8,
+    "frameSize": 128,
+    "sheetSize": [
+      768,
+      1024
+    ],
+    "runtimeBytes": 961198,
+    "generator": "asset-pipeline/render_walkcycles.py",
+    "characters": [
+      "tung",
+      "shark",
+      "cup",
+      "croc",
+      "chaos"
+    ]
+  }
 }

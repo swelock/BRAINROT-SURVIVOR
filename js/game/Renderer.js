@@ -64,8 +64,8 @@ export class Renderer{
 let shadowCache,numberCache;
 function shadow(c,x,y,s,id,pose){
  if(!shadowCache){shadowCache=document.createElement('canvas');shadowCache.width=160;shadowCache.height=80;const q=shadowCache.getContext('2d');const gr=q.createRadialGradient(80,40,1,80,40,75);gr.addColorStop(0,'#101b18aa');gr.addColorStop(.35,'#101b1870');gr.addColorStop(1,'#101b1800');q.scale(1,.5);q.fillStyle=gr;q.fillRect(0,0,160,160);}
- c.save();c.globalAlpha=id==='croc'?.48:.7;const stretch=pose.dashLeft>0?1.3:id==='tung'&&pose.passive<.22?.86:id==='tung'&&pose.specialTime>0?1+pose.specialTime*.2:1;
- c.drawImage(shadowCache,x-37*s*stretch,y-9*s,74*s*stretch,30*s);
+ c.save();const contact=pose.motion?.contact??1;c.globalAlpha=(id==='croc'?.48:.7)*(.88+.12*contact);const stretch=pose.dashLeft>0?1.3:id==='tung'&&pose.passive<.22?.86:id==='tung'&&pose.specialTime>0?1+pose.specialTime*.2:1;
+ c.drawImage(shadowCache,x-37*s*stretch,y-9*s,74*s*stretch*(.94+.06*contact),30*s*(.94+.06*contact));
  c.globalAlpha=.17;c.drawImage(shadowCache,x-15*s,y-20*s,88*s,35*s);c.restore();
 }
 function draw67(c,q,t){

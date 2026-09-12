@@ -1,3 +1,4 @@
+import {updateLocomotion} from '../systems/LocomotionSystem.js';
 import {prepareCasino} from '../systems/CasinoSystem.js';
 import {activateBonuses,updateBonuses} from '../systems/NextRunBonusSystem.js';
 import {beginTutorial,updateTutorial} from '../systems/TutorialSystem.js';
@@ -36,8 +37,8 @@ export class Game{
  const dir=direction(this.input.x,this.input.y);if(dir.x||dir.y){p.lastX=dir.x;p.lastY=dir.y;if(dir.x)p.facing=Math.sign(dir.x);}
  if(this.input.dash&&p.dashTimer<=0){p.dashLeft=.18;p.dashX=p.lastX;p.dashY=p.lastY;p.dashTimer=p.character.dash*Math.max(.3,1-(p.b.dashCooldown||0));p.invulnerable=Math.max(p.invulnerable,.25);p.afterDash=2;this.sound('dash');}this.input.dash=false;
  const speed=p.character.speed*(1+(p.b.speed||0))*(this.hasBuff('energy')?1.5:1)*(this.hasBuff('turbo')?2:1)*(this.chaosEffect==='speed'?1.5:1)*(p.b.unstoppable&&p.afterDash>0?1.2:1);
- if(p.dashLeft>0){const step=Math.min(dt,p.dashLeft);p.dashLeft-=step;const v=150*(1+(p.b.dashDistance||0))/.18;p.x+=p.dashX*v*step;p.y+=p.dashY*v*step;this.particle(p.x,p.y,p.character.color,3);if(p.character.id==='shark'||p.b.afterimage)this.zones.push({x:p.x,y:p.y,r:25,life:2,total:2,damage:18,trail:true});}else{p.x+=dir.x*speed*dt;p.y+=dir.y*speed*dt;}
- updateTutorial(this,dt,p.x-oldX,p.y-oldY,p.dashLeft>0);
+ const dashMove=p.dashLeft>0;if(dashMove){const step=Math.min(dt,p.dashLeft);p.dashLeft-=step;const v=150*(1+(p.b.dashDistance||0))/.18;p.x+=p.dashX*v*step;p.y+=p.dashY*v*step;this.particle(p.x,p.y,p.character.color,3);if(p.character.id==='shark'||p.b.afterimage)this.zones.push({x:p.x,y:p.y,r:25,life:2,total:2,damage:18,trail:true});}else{p.x+=dir.x*speed*dt;p.y+=dir.y*speed*dt;}
+ updateLocomotion(p,dt,p.x-oldX,p.y-oldY,dashMove);updateTutorial(this,dt,p.x-oldX,p.y-oldY,p.dashLeft>0);
  this.camera.x+=(p.x-this.camera.x)*(1-Math.exp(-8*dt));this.camera.y+=(p.y-this.camera.y)*(1-Math.exp(-8*dt));
  if(this.mode!=='NORMAL'){updateMode(this,dt);}
  else if(this.state==='WAVE_TRANSITION'){this.transition-=dt;if(this.transition<=0)this.state='PLAYING';}
@@ -70,7 +71,7 @@ export class Game{
  this.totalDamage+=Math.min(e.hp,damage);e.hp-=damage;if(!dot){e.hit=.12;this.visuals.hit(e,p,crit);if(this.numbers.length<50)this.numbers.push({x:e.x,y:e.y-e.r,value:Math.round(damage),crit,life:.65});if(crit)this.sound('crit');}
  if(e.hp<=0){this.visuals.death(e);if(e.boss)this.visuals.stop(this,.085);e.dead=true;this.kills++;this.sound('death');this.particle(e.x,e.y,e.color,7);const value=e.boss?95:(e.xp||8)*(e.elite?3:1);if(this.pickups.length>=700){let nearest=this.pickups[0];for(const q of this.pickups)if(dist(q,e)<dist(nearest,e))nearest=q;nearest.value+=value;}else this.pickups.push({x:e.x,y:e.y,value});
  if(e.modifier==='explosive')this.zones.push({x:e.x,y:e.y,r:85,life:1,total:1,hostile:true,damage:18});
- if(e.boss){this.bosses++;this.player.hp=Math.min(this.player.maxHp,this.player.hp+this.player.maxHp*(this.mode==='SUPER_VOMIT'?.08:.2));this.chests.push({x:e.x,y:e.y,r:23});if(p.bonusBossLoot){p.bonusBossLoot=0;this.chests.push({x:e.x+40,y:e.y,r:23});}bossDefeated(this,e);}}
+ if(e.boss){this.bosses++;this.player.hp=Math.min(this.player.maxHp,this.player.hp+this.player.maxHp*(this.mode==='SUPER_VOMIT'?.08:.2));this.chests.push({x:e.x,y:e.y,r:23});if(p.bonusBossLoot){p.bonusBossLoot--;this.chests.push({x:e.x+40,y:e.y,r:23});}bossDefeated(this,e);}}
  }
  explode(x,y,r,damage,color='#d8e886',knockback=55){r*=1+(this.player.b.explosionRadius||0);this.visuals.light(x,y,r,color);this.effect(x,y,r,color,.45);this.particle(x,y,color,12);for(const e of this.grid.query(x,y,r+65))if(!e.dead&&Math.hypot(e.x-x,e.y-y)<r+e.r){this.damageEnemy(e,damage*(1+(this.player.b.explosion||0))*(1+(this.player.b.area||0)));const a=Math.atan2(e.y-y,e.x-x);e.x+=Math.cos(a)*knockback;e.y+=Math.sin(a)*knockback;}this.shake=Math.max(this.shake,2);}
  chain(origin,damage){const targets=this.grid.query(origin.x,origin.y,240).filter(e=>!e.dead&&e!==origin).sort((a,b)=>dist(a,origin)-dist(b,origin)).slice(0,3);let from=origin;for(const e of targets){if(this.effects.length<100)this.effects.push({x:from.x,y:from.y,x2:e.x,y2:e.y,lightning:true,life:.2,total:.2,color:'#aadefa'});this.damageEnemy(e,damage);from=e;}}

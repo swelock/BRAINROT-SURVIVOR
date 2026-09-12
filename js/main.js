@@ -10,7 +10,7 @@ if(testMode){let value=null;storage={getItem:()=>value,setItem:(k,v)=>{value=v;}
 const store=new SaveSystem(storage),audio=new AudioSystem(store.data.settings);
 let ui;
 const game=new Game(store.data,{audio,onEvent:(type,data)=>{if(type==='state')ui?.render();if(type==='announce')ui?.toast(data.type,data.value);if(type==='save')store.write();if(type==='end'){ui.render();if(!data.victory)setTimeout(()=>{if(game.state==='GAME_OVER'){game.state='RESULTS';ui.render();}},1150);}}});
-const renderer=new Renderer(document.querySelector('#game'),game);ui=new UIManager(game,store);ui.render();assets.preload().then(()=>ui.render());
+const renderer=new Renderer(document.querySelector('#game'),game);ui=new UIManager(game,store);ui.render();Promise.all([assets.preload(),assets.preloadMotion()]).then(()=>ui.render());
 const keys=new Set();let touch={x:0,y:0};
 window.addEventListener('keydown',e=>{if(e.code!=='Escape'&&['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;const controlled=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight','Escape'];if(controlled.includes(e.code)&&game.active())e.preventDefault();keys.add(e.code);if(!e.repeat){if(e.code==='Escape'){if(game.active())game.pause();else if(game.state==='PAUSED')game.resume();else if(game.state==='SETTINGS')ui.action('settingsBack');else if(['UPGRADES','STATS','CHARACTER_SELECT'].includes(game.state))ui.show('MENU');}if(['Space','ShiftLeft','ShiftRight'].includes(e.code)&&game.active())game.input.dash=true;if(game.state==='LEVEL_UP'&&['Digit1','Digit2','Digit3'].includes(e.code))game.choose(Number(e.code.slice(-1))-1);}});
 window.addEventListener('keyup',e=>keys.delete(e.code));

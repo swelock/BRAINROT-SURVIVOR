@@ -46,7 +46,7 @@ def shoe(m,x,y,z):
     m.ellipsoid([x,y-.055,z+.08],[.155,.265,.115],BLUE)
     for i in range(3):m.tube([x-.09,y-.10+i*.07,z+.17],[x+.09,y-.10+i*.07,z+.17],.015,WHITE,sides=8)
     m.ellipsoid([x,y+.13,z+.17],[.095,.075,.04],DARK)
-def build(character):
+def build(character, phase=None):
     m=Mesh()
     if character=='tung':
         m.tube([0,0,.55],[0,0,1.9],.30,WOOD,r2=.34,sides=40)
@@ -55,9 +55,11 @@ def build(character):
             a=TAU*i/26;r=.304
             pts=[[math.cos(a)*r,math.sin(a)*r,.65],[math.cos(a+.025)*.319,math.sin(a+.025)*.319,1.2],[math.cos(a)*.338,math.sin(a)*.338,1.86]]
             m.line(pts,.006,[.40,.22,.095] if i%3 else [.81,.52,.28])
-        for x in [-.17,.17]:
-            m.line([[x,0,.65],[x*1.1,-.01,.31],[x*1.3,-.05,.12]],.065,WOOD)
-            m.ellipsoid([x*1.3,-.16,.075],[.115,.22,.075],WOOD)
+        for i,x in enumerate([-.17,.17]):
+            swing=0 if phase is None else math.sin(phase+i*math.pi)
+            stride=swing*.15+(0 if phase is None else .025*math.cos(phase+i*math.pi)); lift=max(0,swing)*.12
+            m.line([[x,0,.65],[x*1.1,stride*.45,.31+lift*.4],[x*1.3,-.05+stride,.12+lift]],.065,WOOD)
+            m.ellipsoid([x*1.3,-.16+stride,.075+lift],[.115,.22,.075],WOOD)
         m.line([[-.30,0,1.25],[-.48,-.05,.90],[-.48,-.17,.70]],.067,WOOD)
         m.line([[.30,0,1.25],[.49,-.10,1.02],[.67,-.18,1.15]],.07,WOOD)
         m.tube([.66,-.18,.67],[.66,-.18,1.72],.07,[.42,.22,.085],r2=.10)
@@ -76,8 +78,11 @@ def build(character):
         m.fin([[0,.95,.83],[0,1.35,1.23],[0,1.20,.48]],.045,gray)
         for side in [-1,1]:
             m.fin([[side*.24,-.1,.77],[side*.79,.23,.49],[side*.27,.40,.64]],.05,gray)
-        for x,y in [(-.34,-.30),(.34,-.30),(0,.54)]:
-            m.tube([x*.8,y,.66],[x,y,.22],.074,gray);shoe(m,x,y,.11)
+        for i,(x,y) in enumerate([(-.34,-.30),(.34,-.30),(0,.54)]):
+            swing=0 if phase is None else math.sin(phase+i*TAU/3)
+            stride=swing*.23;lift=max(0,swing)*.16
+            m.line([[x*.8,y,.66],[x,y+stride*.4,.40+lift*.5],[x,y+stride,.22+lift]],.074,gray)
+            shoe(m,x,y+stride,.11+lift)
         eyes(m,[[-.23,-.738,.84],[.23,-.738,.84]],.085)
         m.line([[-.23,-.78,.62],[0,-.92,.60],[.23,-.78,.62]],.022,DARK)
         for x in [-.14,-.07,0,.07,.14]:m.tube([x,-.869+abs(x)*.3,.63],[x,-.869+abs(x)*.3,.57],.022,WHITE,r2=.002,sides=6)
@@ -115,14 +120,39 @@ def build(character):
         m.tube([0,0,.72],[0,0,1.0],.43,[.97,.52,.66],r2=.13,sides=48)
         for i in range(20):
             a=TAU*i/20;m.tube([.13*math.cos(a),.13*math.sin(a),.99],[.44*math.cos(a),.44*math.sin(a),.72],.016,[.96,.66,.75],sides=8)
-        m.line([[-.08,0,.75],[-.11,0,.40],[-.08,-.02,.12]],.047,SKIN)
-        m.line([[.08,0,.75],[.25,.02,.43],[.37,.0,.58]],.047,SKIN)
-        m.ellipsoid([-.08,-.055,.08],[.06,.10,.12],PINK)
-        m.ellipsoid([.39,-.025,.60],[.08,.09,.06],PINK)
+        if phase is None:
+            m.line([[-.08,0,.75],[-.11,0,.40],[-.08,-.02,.12]],.047,SKIN)
+            m.line([[.08,0,.75],[.25,.02,.43],[.37,.0,.58]],.047,SKIN)
+            m.ellipsoid([-.08,-.055,.08],[.06,.10,.12],PINK)
+            m.ellipsoid([.39,-.025,.60],[.08,.09,.06],PINK)
+        else:
+            for i,x in enumerate([-.10,.10]):
+                swing=math.sin(phase+i*math.pi);stride=.14*swing+.025*math.cos(phase+i*math.pi);lift=max(0,swing)*.13
+                m.line([[x,0,.75],[x*1.2,stride*.6,.40+lift*.5],[x,stride,.13+lift]],.047,SKIN)
+                m.ellipsoid([x,stride-.07,.09+lift],[.065,.13,.08],PINK)
         m.line([[-.12,0,1.15],[-.35,-.03,1.25],[-.48,-.08,1.56]],.043,SKIN)
         m.line([[.12,0,1.15],[.36,-.10,1.03],[.53,-.14,1.19]],.043,SKIN)
         eyes(m,[[-.115,-.294,1.69],[.115,-.294,1.69]],.075)
         for s in [-1,1]:
             m.line([[s*.18,-.29,1.75],[s*.22,-.31,1.8]],.015,DARK)
         m.line([[-.065,-.282,1.48],[0,-.298,1.46],[.065,-.282,1.49]],.013,[.55,.19,.25])
+    elif character=='chaos':
+        purple=[.58,.40,.76]; pale=[.76,.59,.9]
+        m.ellipsoid([0,0,.83],[.34,.26,.46],purple)
+        for i in range(9):
+            a=i*TAU/9;m.ellipsoid([math.cos(a)*.24,math.sin(a)*.18,1.22+(.05 if i%2 else 0)],[.16,.14,.16],pale if i%2 else purple)
+        for i,x in enumerate([-.17,.17]):
+            swing=0 if phase is None else math.sin(phase+i*math.pi+.25*i)
+            lift=max(0,swing)*(.14 if i else .1);y=swing*.17
+            m.line([[x,0,.57],[x*1.3,y*.5,.3+lift*.4],[x*1.5,y,.11+lift]],.065,purple)
+            m.ellipsoid([x*1.5,y-.09,.08+lift],[.12,.18,.07],purple)
+        for side in [-1,1]:m.line([[side*.28,0,.96],[side*.43,-.01,.72],[side*.54,-.09,.76]],.065,pale)
+        eyes(m,[[-.12,-.25,1.02],[.12,-.25,1.02]],.09)
+        m.line([[-.1,-.264,.81],[0,-.29,.78],[.1,-.264,.82]],.018,DARK)
+        m.ellipsoid([0,0,1.53],[.11,.08,.04],[.75,.94,.45])
+    if phase is not None and character=='croc':
+        # Aircraft: no walking legs. Pre-render a subtle roll/pitch hover cycle.
+        v=np.asarray(m.vertices);roll=.045*math.sin(phase);pitch=.025*math.cos(phase)
+        v[:,0]+= (v[:,2]-.73)*math.sin(roll);v[:,2]+=v[:,0]*math.sin(roll)+v[:,1]*math.sin(pitch)
+        m.vertices=v.tolist()
     return m

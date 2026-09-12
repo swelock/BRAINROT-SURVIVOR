@@ -1,0 +1,102 @@
+[
+  {
+    "character": "tung",
+    "bytes": 110940,
+    "distinctFramesPerDirection": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "bounds": [
+      20,
+      4,
+      108,
+      127
+    ]
+  },
+  {
+    "character": "shark",
+    "bytes": 117526,
+    "distinctFramesPerDirection": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "bounds": [
+      6,
+      9,
+      122,
+      109
+    ]
+  },
+  {
+    "character": "cup",
+    "bytes": 103070,
+    "distinctFramesPerDirection": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "bounds": [
+      28,
+      11,
+      100,
+      120
+    ]
+  },
+  {
+    "character": "croc",
+    "bytes": 279682,
+    "distinctFramesPerDirection": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "bounds": [
+      8,
+      33,
+      120,
+      113
+    ]
+  },
+  {
+    "character": "chaos",
+    "bytes": 112412,
+    "distinctFramesPerDirection": [
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6,
+      6
+    ],
+    "bounds": [
+      27,
+      29,
+      101,
+      124
+    ]
+  }
+]
