@@ -1,0 +1,8 @@
+{
+  "character": "shark",
+  "frameSize": 128,
+  "pixelsPerUnit": 43,
+  "anchorX": 64,
+  "anchorY": 87,
+  "drawSize": 106
+}

@@ -1,0 +1,19 @@
+{
+  "character": "tung",
+  "frameSize": 128,
+  "pixelsPerUnit": 57,
+  "anchorX": 64,
+  "anchorY": 109,
+  "drawSize": 106,
+  "directions": [
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE"
+  ],
+  "source": "tung.webp"
+}

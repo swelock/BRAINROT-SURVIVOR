@@ -1,0 +1,19 @@
+{
+  "character": "croc",
+  "frameSize": 128,
+  "pixelsPerUnit": 37,
+  "anchorX": 64,
+  "anchorY": 92,
+  "drawSize": 106,
+  "directions": [
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE"
+  ],
+  "source": "croc.webp"
+}

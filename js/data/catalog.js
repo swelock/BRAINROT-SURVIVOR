@@ -16,6 +16,7 @@ export const weapons = [
 ];
 const U=(id,ru,en,desc,endesc,key,value,max=1,rarity=0)=>({id,name:[ru,en],desc:[desc,endesc],key,value,max,rarity});
 export const upgrades=[
+ U('sixSeven','6️⃣7️⃣ SIX SEVEN','6️⃣7️⃣ SIX SEVEN','Каждый 67-й залп базовой рвоты выпускает 67. Пять уровней: урон, пробитие, осколки, взрывы, ABSOLUTE 67.','Every 67th basic volley fires 67. Five levels: damage, pierce, shards, explosions, ABSOLUTE 67.','sixSeven',1,5,1),
  U('strong','Крепкий желудок','Stronger stomach','+15% урона','+15% damage','damage',.15,5),
  U('crit','Критический брейнрот','Critical brainrot','+5% шанс крита','+5% critical chance','crit',.05,5,1),
  U('critDamage','Критическая катастрофа','Critical disaster','+25% критический урон','+25% critical damage','critDamage',.25,4,1),

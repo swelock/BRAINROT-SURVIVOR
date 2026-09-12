@@ -1,0 +1,8 @@
+{
+  "character": "cup",
+  "frameSize": 128,
+  "pixelsPerUnit": 56,
+  "anchorX": 64,
+  "anchorY": 111,
+  "drawSize": 106
+}

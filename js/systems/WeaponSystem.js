@@ -1,8 +1,9 @@
+import {primaryVolley,impact67} from './SixSeven.js';
 import {weapons} from '../data/catalog.js';
 import {angle,dist,pick} from '../game/math.js';
 export function elemental(g){const n=g.rng();return n<.25?'poison':n<.5?'freeze':n<.7?'critical':n<.85?'knockback':'chain';}
-export function fire(g,x,y,a,options={}){if(g.projectiles.length>=650)return;const p=g.player,b=p.b,speed=(options.speed||500)*(1+(b.projectileSpeed||0));const effects=options.effects||[];if(g.hasBuff('rainbow'))effects.push(elemental(g));
- g.projectiles.push({id:++g.nextId,x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:(options.r||6)*(1+(b.size||0)+(g.hasBuff('boost')?.25:0)+(g.chaosEffect==='size'?.5:0)),damage:options.damage||10,color:options.color||'#caf66c',life:3,pierce:(b.pierce||0)+(options.pierce||0),hits:new Set(),...options,effects,r:(options.r||6)*(1+(b.size||0)+(g.hasBuff('boost')?.25:0)+(g.chaosEffect==='size'?.5:0))});
+export function fire(g,x,y,a,options={}){if(g.projectiles.length>=650)return;const p=g.player,b=p.b,speed=(options.speed||500)*(1+(b.projectileSpeed||0));const effects=[...(options.effects||[])];if(g.hasBuff('rainbow'))effects.push(elemental(g));
+ g.projectiles.push({id:++g.nextId,x,y,vx:Math.cos(a)*speed,vy:Math.sin(a)*speed,r:(options.r||6)*(1+(b.size||0)+(g.hasBuff('boost')?.25:0)+(g.chaosEffect==='size'?.5:0)),damage:options.damage||10,color:options.color||'#caf66c',life:3,pierce:(b.pierce||0)+(options.pierce||0),hits:new Set(),...options,effects,pierce:(b.pierce||0)+(options.pierce||0),r:(options.r||6)*(1+(b.size||0)+(g.hasBuff('boost')?.25:0)+(g.chaosEffect==='size'?.5:0))});
  p.projectileCount++;if(b.nuclearStomach&&p.projectileCount%100===0)g.explode(p.x,p.y,230,120,'#edcf7b');}
 export function updateWeapons(g,dt){const p=g.player,b=p.b;const nearby=g.enemies.filter(e=>!e.dead&&dist(e,p)<1100);let target=null,best=Infinity;for(const e of nearby){const d=dist(e,p);if(d<best){best=d;target=e;}}
  for(const w of p.weapons){const d=weapons.find(d=>d.id===w.id),l=w.level;w.timer-=dt;
@@ -18,22 +19,24 @@ export function updateWeapons(g,dt){const p=g.player,b=p.b;const nearby=g.enemie
  else{
  if(w.id==='basic'&&l>=4)count++;
  if(w.id==='toxic')count+=2+Math.floor(l/2);
- for(let i=0;i<count;i++){const a=angle(p,target)+(i-(count-1)/2)*(w.id==='toxic'?.16:.105);const opts={damage,color:d.color};
+ for(let i=0;i<count;i++){const a=angle(p,target)+(i-(count-1)/2)*(w.id==='toxic'?.16:.105);const opts={damage,color:d.color,weapon:w.id};
  if(w.id==='basic'){opts.pierce=l>=6?1:0;opts.speed=500*(l>=5?1.2:1);if(w.evolved){opts.r=10;opts.effects=['poison'];opts.explosion=45;}}
  if(w.id==='toxic'){opts.speed=420;opts.effects=['poison'];opts.poisonDps=3;opts.poisonDuration=3+l*.25;if(w.evolved)opts.zone=true;}
  if(w.id==='nuclear'){opts.speed=260;opts.r=w.evolved?20:12;opts.explosion=(80+l*6)*(w.evolved?1.6:1);opts.secondary=w.evolved||l>=7;}
  if(w.id==='rainbow'){opts.effects=w.evolved?[elemental(g),elemental(g),elemental(g)]:[elemental(g)];if(w.evolved&&g.rng()<.12)opts.explosion=70;}
  fire(g,p.x,p.y,a,opts);}
  }
+ if(w.id==='basic')primaryVolley(g,damage,angle(p,target));
+ if(!g.active())return;
  if(b.overflow&&p.attacks%20===0)for(let i=0;i<12;i++)fire(g,p.x,p.y,i*Math.PI/6,{damage:18});g.sound('attack');
  }
- p.passive-=dt;if(p.passive<=0){const id=p.character.id;if(id==='tung'){g.explode(p.x,p.y,155,32,'#efc985',90);p.passive=8;}
+ p.passive-=dt;if(p.passive<=0){const id=p.character.id;if(id==='tung'){p.specialTime=.6;g.explode(p.x,p.y,155,32,'#efc985',90);p.passive=8;}
  if(id==='croc'){if(target)fire(g,p.x,p.y,angle(p,target),{damage:48,r:14,speed:300,explosion:110,color:'#edcb7e'});p.passive=7;}
- if(id==='cup'){g.explode(p.x,p.y,115,28,'#f4bad2',40);p.invulnerable=Math.max(p.invulnerable,.65);p.passive=6;}
+ if(id==='cup'){p.specialTime=.65;g.explode(p.x,p.y,115,28,'#f4bad2',40);p.invulnerable=Math.max(p.invulnerable,.65);p.passive=6;}
  if(id==='chaos'){g.chaosEffect=pick(['haste','speed','size','chain','explosions'],g.rng);g.chaosTime=5;g.announce('chaos',g.chaosEffect);p.passive=12;}}
  g.rainTimer-=dt;if(g.rainTimer<=0){g.rainTimer=.35;if(g.hasBuff('rain')&&target)fire(g,target.x+(g.rng()-.5)*120,target.y-250,Math.PI/2,{damage:25,color:'#c4ef7a'});if(g.chaosEffect==='explosions'&&target)g.explode(target.x,target.y,75,25);if(g.chaosEffect==='chain'&&target)g.chain(target,25);}
- for(const q of g.projectiles){q.x+=q.vx*dt;q.y+=q.vy*dt;q.life-=dt;if(dist(q,p)>1500){q.life=0;continue;}
- for(const e of g.grid.query(q.x,q.y,q.r+65)){if(e.dead||q.hits.has(e.id)||dist(q,e)>q.r+e.r)continue;q.hits.add(e.id);if(!q.explosion)g.damageEnemy(e,q.damage,q.effects.includes('critical'));g.sound('hit');
+ for(const q of g.projectiles){if(!g.active())return;q.splitLife=Math.max(0,(q.splitLife||0)-dt);const ox=q.x,oy=q.y;q.x+=q.vx*dt;q.y+=q.vy*dt;q.life-=dt;if(dist(q,p)>1500){q.life=0;continue;}
+ for(const e of g.grid.query((ox+q.x)/2,(oy+q.y)/2,q.r+65+Math.hypot(q.x-ox,q.y-oy)/2)){if(e.dead||q.hits.has(e.id)||segmentDistance(e,ox,oy,q.x,q.y)>q.r+e.r)continue;q.hits.add(e.id);if(!q.explosion)g.damageEnemy(e,q.damage,q.effects.includes('critical'));g.sound('hit');if(!g.active())return;if(q.sixSeven)impact67(g,q,e);
  for(const effect of q.effects){if(effect==='poison'){e.poison=q.poisonDuration||3;e.poisonDps=(q.poisonDps||3)*(1+(b.poison||0));}if(effect==='freeze')e.freeze=2;if(effect==='knockback'){e.x+=q.vx*.13;e.y+=q.vy*.13;}if(effect==='chain')g.chain(e,q.damage*.65);}
  if(q.explosion)g.explode(q.x,q.y,q.explosion,q.damage,q.color);
  else if(g.rng()<(b.unstable||0)+(g.hasBuff('fever')?.2:0))g.explode(q.x,q.y,55,q.damage*.6,q.color);
@@ -43,3 +46,5 @@ export function updateWeapons(g,dt){const p=g.player,b=p.b;const nearby=g.enemie
  }
  g.projectiles=g.projectiles.filter(q=>q.life>0);
 }
+
+function segmentDistance(e,x,y,x2,y2){const dx=x2-x,dy=y2-y;const t=Math.max(0,Math.min(1,((e.x-x)*dx+(e.y-y)*dy)/(dx*dx+dy*dy||1)));return Math.hypot(e.x-x-t*dx,e.y-y-t*dy);}

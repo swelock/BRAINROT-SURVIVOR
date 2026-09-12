@@ -1,13 +1,16 @@
+import {assets} from './systems/AssetManager.js';
 import {SaveSystem} from './systems/SaveSystem.js';
 import {AudioSystem} from './systems/AudioSystem.js';
 import {Game} from './game/Game.js';
 import {Renderer} from './game/Renderer.js';
 import {UIManager} from './ui/UIManager.js';
+const testMode=new URLSearchParams(location.search).has('test');
 let storage;try{storage=window.localStorage;}catch{storage={getItem(){throw Error('Unavailable');},setItem(){throw Error('Unavailable');}};}
+if(testMode){let value=null;storage={getItem:()=>value,setItem:(k,v)=>{value=v;}};}
 const store=new SaveSystem(storage),audio=new AudioSystem(store.data.settings);
 let ui;
 const game=new Game(store.data,{audio,onEvent:(type,data)=>{if(type==='state')ui?.render();if(type==='announce')ui?.toast(data.type,data.value);if(type==='save')store.write();if(type==='end'){ui.render();if(!data.victory)setTimeout(()=>{if(game.state==='GAME_OVER'){game.state='RESULTS';ui.render();}},1150);}}});
-const renderer=new Renderer(document.querySelector('#game'),game);ui=new UIManager(game,store);ui.render();
+const renderer=new Renderer(document.querySelector('#game'),game);ui=new UIManager(game,store);ui.render();assets.preload().then(()=>ui.render());
 const keys=new Set();let touch={x:0,y:0};
 window.addEventListener('keydown',e=>{if(e.code!=='Escape'&&['INPUT','SELECT','TEXTAREA'].includes(document.activeElement?.tagName))return;const controlled=['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight','Escape'];if(controlled.includes(e.code)&&game.active())e.preventDefault();keys.add(e.code);if(!e.repeat){if(e.code==='Escape'){if(game.active())game.pause();else if(game.state==='PAUSED')game.resume();else if(game.state==='SETTINGS')ui.action('settingsBack');else if(['UPGRADES','STATS','CHARACTER_SELECT'].includes(game.state))ui.show('MENU');}if(['Space','ShiftLeft','ShiftRight'].includes(e.code)&&game.active())game.input.dash=true;if(game.state==='LEVEL_UP'&&['Digit1','Digit2','Digit3'].includes(e.code))game.choose(Number(e.code.slice(-1))-1);}});
 window.addEventListener('keyup',e=>keys.delete(e.code));
@@ -22,4 +25,4 @@ function frame(now){const dt=Math.min(.1,(now-last)/1000);last=now;game.input.x=
  renderer.draw(now/1000);hudTime+=dt;if(hudTime>=.1){hudTime=0;ui.updateHUD();document.body.dataset.state=game.state;}requestAnimationFrame(frame);}
 requestAnimationFrame(frame);
 // Test access is opt-in and never changes the normal game or saved progress.
-if(new URLSearchParams(location.search).has('test'))window.brainrot={game,ui,store,renderer};
+if(new URLSearchParams(location.search).has('test'))window.brainrot={game,ui,store,renderer,assets};

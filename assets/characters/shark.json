@@ -1,0 +1,19 @@
+{
+  "character": "shark",
+  "frameSize": 128,
+  "pixelsPerUnit": 43,
+  "anchorX": 64,
+  "anchorY": 87,
+  "drawSize": 106,
+  "directions": [
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE"
+  ],
+  "source": "shark.webp"
+}

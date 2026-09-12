@@ -1,0 +1,36 @@
+<!doctype html><meta charset="utf-8"><title>BRAINROT v2 verification</title>
+<style>body{margin:0;background:#10231b;color:#dff6c9;font:12px system-ui}nav{display:flex;gap:5px;padding:5px;flex-wrap:wrap}button{padding:5px;background:#31472f;color:#e6ffd9;border:1px solid #799461;cursor:pointer}iframe{width:100%;height:calc(100vh - 95px);border:0}output{display:block;white-space:pre-wrap;max-height:55px;overflow:auto}</style>
+<nav><button data-case="victory">Wave 15 victory</button><button data-case="67">SIX SEVEN shot</button><button data-case="super">Boss rush unlocked</button><button data-case="kill">Defeat current bosses</button><button data-case="endless">Endless 10 minutes</button><button data-case="death">Endless death</button><button data-case="stress">Stress 600 frames</button><button data-case="fallback">Missing sprites</button><button data-case="directions">Direction cycle</button><button data-case="restore">Restore sprites</button></nav><output id="report">Loading isolated test game…</output><iframe src="../index.html?test"></iframe>
+<script type="module">
+import {spawnEnemy} from '../js/systems/EnemySystem.js';
+import {primaryVolley} from '../js/systems/SixSeven.js';
+import {fire} from '../js/systems/WeaponSystem.js';
+const frame=document.querySelector('iframe'),report=document.querySelector('#report');let savedImages,cycle;
+function context(){if(!frame.contentWindow.brainrot)throw Error('Game is still loading');return frame.contentWindow.brainrot;}
+function reportState(){const {game:g}=context();report.textContent=JSON.stringify({state:g.state,mode:g.mode,victories:g.save.stats.victories,dna:g.save.dna,round:g.superRound,hp:g.player?.hp,time:g.time,endless:g.endlessTime,result:g.result},null,0);}
+frame.onload=()=>{report.textContent='Ready: isolated in-memory save. Production LocalStorage is never modified.';};
+document.querySelector('nav').onclick=async e=>{const id=e.target.dataset.case;if(!id)return;try{
+ clearInterval(cycle);const {game:g,ui,renderer}=context();
+ if(id==='victory'){g.start('tung');g.state='PLAYING';g.wave=15;g.player.level=32;g.player.weapons[0].level=8;g.player.upgrades.sixSeven=5;const b=spawnEnemy(g,'absolute',true);g.damageEnemy(b,1e9);}
+ if(id==='67'){g.start('shark');g.state='PLAYING';g.wave=12;g.player.weapons=[];g.player.upgrades.sixSeven=5;g.player.sixSevenCounter=66;g.rng=()=>.01;primaryVolley(g,15,0);g.projectiles[0].x=100;g.state='PAUSED';ui.root.innerHTML='';ui.root.className='playing';ui.buildHUD();}
+ if(id==='super'){g.save.modes.superVomitUnlocked=true;ui.show('MENU');}
+ if(id==='kill'){if(g.state==='PAUSED')g.resume();for(const b of [...g.enemies].filter(e=>e.boss&&!e.dead))g.damageEnemy(b,1e9);}
+ if(id==='endless'){g.start('croc');g.state='PLAYING';g.wave=15;g.postVictory();g.enterEndless();g.endlessTime=599.99;g.nextEndlessBoss=600;g.player.level=35;g.player.weapons[0].level=8;g.player.upgrades.sixSeven=5;g.update(.02);g.pause();}
+ if(id==='death'){if(g.state==='PAUSED')g.resume();g.player.invulnerable=0;g.buffs={};g.hurt(1e9);}
+
+ // Runtime image manager lives in the iframe realm; expose through the documented test bridge.
+ const a=frame.contentWindow.brainrot.assets;
+ if(id==='fallback'){savedImages=new Map(a.images);a.images.clear();ui.show('CHARACTER_SELECT');}
+ if(id==='restore'){if(savedImages)a.images=new Map(savedImages);ui.show('CHARACTER_SELECT');}
+ if(id==='directions'){g.start('cup');g.state='PAUSED';ui.root.innerHTML='';ui.root.className='playing';ui.buildHUD();let n=0;cycle=setInterval(()=>{g.player.lastX=Math.cos(n*Math.PI/4);g.player.lastY=Math.sin(n++*Math.PI/4);report.textContent='Direction '+((n-1)%8);},550);}
+ if(id==='stress'){
+  g.start('tung');g.state='PLAYING';g.wave=15;g.postVictory();g.enterEndless();g.endlessTime=600;g.nextEndlessBoss=720;g.player.invulnerable=1000;g.player.upgrades.sixSeven=5;
+  g.player.weapons=['basic','nuclear','toxic','rainbow','orbit','sigma'].map(id=>({id,level:8,evolved:!['sigma'].includes(id),timer:0}));g.player.b.count=4;g.player.b.attackSpeed=1;
+  for(let i=0;i<240;i++){const e=spawnEnemy(g,i<2?['clubber','breaker'][i]:['clubber','shooter','tank','runner'][i%4],i<2);e.x=Math.cos(i*2.4)*(90+i*2);e.y=Math.sin(i*2.4)*(90+i*2);e.hp=e.maxHp=1e9;}
+  for(let i=0;i<650;i++)fire(g,0,0,i*.1,{pierce:20});const times=[];let maxProjectiles=0,maxParticles=0;
+  for(let i=0;i<600;i++){const t=performance.now();g.update(1/60);renderer.draw(i/60);times.push(performance.now()-t);maxProjectiles=Math.max(maxProjectiles,g.projectiles.length);maxParticles=Math.max(maxParticles,g.particles.length);}
+  times.sort((a,b)=>a-b);g.pause();ui.root.innerHTML='';ui.root.className='playing';report.textContent=JSON.stringify({viewport:[renderer.w,renderer.h],frames:600,mean:times.reduce((a,b)=>a+b)/600,p95:times[569],maxProjectiles,maxParticles,enemies:g.enemies.length});return;
+ }
+ if(!['67','directions'].includes(id))ui.render();reportState();
+ }catch(error){report.textContent='FAIL: '+error.stack;}};
+</script>

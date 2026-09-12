@@ -11,3 +11,12 @@
 @media(max-width:400px){.hud-health{width:132px}.hud-row{font-size:9px}.hud-health{padding:11px 10px}.hud-bottom{gap:6px}.dash-panel{padding:8px}.dash-panel>div{width:64px}#kill-counter{display:none}}
 
 .results.victory{animation:victory-arrive .6s ease-out both;border-color:#c5ed8380;box-shadow:0 0 100px #b9dc7f17,0 30px 100px #0005}.results.victory .result-dna{background:radial-gradient(ellipse at center,#c5ed8328,transparent);border-color:#c5ed8355}@keyframes victory-arrive{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* V2 mode controls fit the existing menu and HUD. */
+.super-button{border-color:#b695ed66;background:linear-gradient(110deg,#493254,#293c31);color:#ead8ff;letter-spacing:.6px}
+.continuation{max-width:570px}.continuation>p{margin:18px 0}.continuation small{display:block;margin-top:24px;color:var(--muted);line-height:1.65}.victory-saved{color:var(--lime)}.mode-result{padding:12px;border:1px solid var(--border);border-radius:10px;line-height:1.8}
+#six-seven-hud{position:absolute;left:28px;top:116px;padding:8px 12px;font-size:12px;color:var(--lime)}#six-seven-hud.charged{border-color:var(--lime);color:#f4ffd8}
+body[data-state=ENDLESS] .hud-wave>span,body[data-state=SUPER_VOMIT_PLAYING] .hud-wave>span{font-size:10px}
+@media(pointer:coarse){body[data-state=ENDLESS] #touch,body[data-state=SUPER_VOMIT_PLAYING] #touch,body[data-state=SUPER_VOMIT_PREP] #touch{display:block}body[data-state=ENDLESS] #buff-list,body[data-state=SUPER_VOMIT_PLAYING] #buff-list{bottom:245px}}
+@media(max-height:800px) and (min-width:701px){.menu-content{margin-top:26px}.menu-intro{margin:22px 0 18px}.menu-record{margin-top:18px}.menu-footer{position:relative;left:0;right:0;bottom:0;margin-top:20px}}
+@media(max-width:700px){#six-seven-hud{left:12px;top:104px;font-size:10px;padding:6px}.mode-result{font-size:12px}.continuation h1{font-size:36px}}

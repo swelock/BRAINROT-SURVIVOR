@@ -1,0 +1,137 @@
+{
+  "checkedOn": "2026-09-11",
+  "budgetSpent": 0,
+  "used": [
+    {
+      "character": "tung",
+      "displayName": "Tung Tung Tung Sahur",
+      "creator": "Original project art (procedural mesh source)",
+      "source": "asset-pipeline/models.py",
+      "sourceType": "original-procedural-mesh",
+      "external": false,
+      "cost": 0,
+      "modified": false,
+      "runtime": "assets/characters/tung.webp",
+      "notes": "Rendered with bundled offline Python rasterizer; no downloaded model"
+    },
+    {
+      "character": "shark",
+      "displayName": "Tralalero Tralala",
+      "creator": "Original project art (procedural mesh source)",
+      "source": "asset-pipeline/models.py",
+      "sourceType": "original-procedural-mesh",
+      "external": false,
+      "cost": 0,
+      "modified": false,
+      "runtime": "assets/characters/shark.webp",
+      "notes": "Rendered with bundled offline Python rasterizer; no downloaded model"
+    },
+    {
+      "character": "croc",
+      "displayName": "Bombardiro Crocodilo",
+      "creator": "Original project art (procedural mesh source)",
+      "source": "asset-pipeline/models.py",
+      "sourceType": "original-procedural-mesh",
+      "external": false,
+      "cost": 0,
+      "modified": false,
+      "runtime": "assets/characters/croc.webp",
+      "notes": "Rendered with bundled offline Python rasterizer; no downloaded model"
+    },
+    {
+      "character": "cup",
+      "displayName": "Ballerina Cappuccina",
+      "creator": "Original project art (procedural mesh source)",
+      "source": "asset-pipeline/models.py",
+      "sourceType": "original-procedural-mesh",
+      "external": false,
+      "cost": 0,
+      "modified": false,
+      "runtime": "assets/characters/cup.webp",
+      "notes": "Rendered with bundled offline Python rasterizer; no downloaded model"
+    }
+  ],
+  "researchedNotShipped": [
+    {
+      "creator": "Eks.Art",
+      "source": "https://sketchfab.com/3d-models/tung-tung-tung-sahur-91ddd9079bd84019ba4a12e01d93a0d6",
+      "sourceId": "91ddd9079bd84019ba4a12e01d93a0d6",
+      "shipped": false,
+      "verifiedLicense": null,
+      "reportedLicense": "CC Attribution (search index only)",
+      "reason": "Actual source-page requests returned HTTP 403. No current license or download verified. Restrictions not bypassed."
+    },
+    {
+      "creator": "Alex CGW",
+      "source": "https://sketchfab.com/3d-models/tralalero-tralala-3-legs-3d-model-free-download-1bee81e5cfda4b4c9633541256fd534d",
+      "sourceId": "1bee81e5cfda4b4c9633541256fd534d",
+      "shipped": false,
+      "verifiedLicense": null,
+      "reportedLicense": "CC Attribution (search index only)",
+      "reason": "Actual source-page requests returned HTTP 403. No current license or download verified. Restrictions not bypassed."
+    },
+    {
+      "creator": "Aizen",
+      "source": "https://sketchfab.com/3d-models/bombardiro-crocodilo-4e35c22be1fc43a7b3cfbd53c0c94c92",
+      "sourceId": "4e35c22be1fc43a7b3cfbd53c0c94c92",
+      "shipped": false,
+      "verifiedLicense": null,
+      "reportedLicense": "CC Attribution (search index only)",
+      "reason": "Actual source-page requests returned HTTP 403. No current license or download verified. Restrictions not bypassed."
+    },
+    {
+      "creator": "Aizen",
+      "source": "https://sketchfab.com/3d-models/bombardiro-crocodilo-db92444b3c064933a6f8ae31b0c27810",
+      "sourceId": "db92444b3c064933a6f8ae31b0c27810",
+      "shipped": false,
+      "verifiedLicense": null,
+      "reportedLicense": "CC Attribution (search index only)",
+      "reason": "Actual source-page requests returned HTTP 403. No current license or download verified. Restrictions not bypassed."
+    },
+    {
+      "creator": "princesharma",
+      "source": "https://sketchfab.com/3d-models/ballerina-cappuccina-4c857f49c2e54bb591ffae5a013f020e",
+      "sourceId": "4c857f49c2e54bb591ffae5a013f020e",
+      "shipped": false,
+      "verifiedLicense": null,
+      "reportedLicense": "CC Attribution (search index only)",
+      "reason": "Actual source-page requests returned HTTP 403. No current license or download verified. Restrictions not bypassed."
+    },
+    {
+      "creator": "Alex CGW",
+      "source": "https://sketchfab.com/3d-models/tralalero-tralala-3d-game-ready-model-free-e043ac3561f9417b800b6cd04a0de163",
+      "shipped": false,
+      "reason": "Alternate search result reports CC BY-NC; unsuitable for requested commercial-compatible use; not downloaded."
+    },
+    {
+      "creator": "belivuk23",
+      "source": "https://www.meshy.ai/3d-models/tung-sahur-v2-0196b14b-583c-70e9-9da7-ea73859d4ea3",
+      "shipped": false,
+      "verifiedLicense": "CC0 displayed on actual page",
+      "reason": "Accessible model page provided no public mesh download link; no service registration, generation or paid API used."
+    },
+    {
+      "creator": "Player 3D",
+      "source": "https://www.printables.com/model/1289719-ballerina-capuccina",
+      "shipped": false,
+      "reason": "Primary source returned 403; mirror reports CC BY-SA but source and downloadable mesh could not be verified."
+    },
+    {
+      "creator": "Alex CGW",
+      "source": "https://www.fab.com/listings/7e7c543c-4410-4dfd-917d-79c783c10d8a",
+      "shipped": false,
+      "reason": "Actual page had unspecified license/price selection and no verified zero-cost download; not acquired."
+    },
+    {
+      "creator": "Cinghialino",
+      "source": "https://cults3d.com/en/3d-model/art/cappuccina-ballerina",
+      "shipped": false,
+      "reason": "Search result explicitly excludes commercial license; source fetch returned 403."
+    },
+    {
+      "source": "https://cults3d.com/en/3d-model/game/brainrots-tung-sahur-tralalero-udindin-burbaloni",
+      "shipped": false,
+      "reason": "Source retrieval failed; actual creator/license/download could not be verified."
+    }
+  ]
+}

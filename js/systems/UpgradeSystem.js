@@ -6,7 +6,7 @@ export function choices(game){
  const p=game.player,pool=[];
  for(const w of weapons){const owned=p.weapons.find(x=>x.id===w.id);if(owned&&owned.level<8)pool.push({type:'weapon',id:w.id,rarity:1,level:owned.level+1});else if(!owned&&p.weapons.length<6)pool.push({type:'weapon',id:w.id,rarity:1,level:1});
  if(owned?.level===8&&!owned.evolved&&w.evolution&&(p.upgrades[w.requires]||game.save.upgrades[w.requires]))pool.push({type:'evolution',id:w.id,rarity:3});}
- for(const u of upgrades)if((p.upgrades[u.id]||0)<u.max)pool.push({type:'upgrade',id:u.id,rarity:u.rarity});
+ for(const u of upgrades)if((p.upgrades[u.id]||0)<u.max)pool.push({type:'upgrade',id:u.id,rarity:u.id==='sixSeven'&&(p.upgrades.sixSeven||0)>=2?2:u.rarity});
  const result=[],evolution=pool.find(x=>x.type==='evolution');if(evolution){result.push(evolution);pool.splice(pool.indexOf(evolution),1);}
  if(p.b.gambler&&game.rng()<.08){const leg=pool.find(x=>x.rarity===3);if(leg&&result.length<3){result.push(leg);pool.splice(pool.indexOf(leg),1);}}
  while(result.length<3&&pool.length){const option=weighted(pool,x=>[1,.44,.15,.025][x.rarity]*(x.rarity?1+(p.b.luck||0)+(p.b.rare||0)+(game.hasBuff('clover')?.5:0):1),game.rng);result.push(option);pool.splice(pool.indexOf(option),1);}

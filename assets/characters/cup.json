@@ -1,0 +1,19 @@
+{
+  "character": "cup",
+  "frameSize": 128,
+  "pixelsPerUnit": 56,
+  "anchorX": 64,
+  "anchorY": 111,
+  "drawSize": 106,
+  "directions": [
+    "E",
+    "SE",
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE"
+  ],
+  "source": "cup.webp"
+}
